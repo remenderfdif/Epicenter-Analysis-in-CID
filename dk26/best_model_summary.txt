@@ -1,0 +1,333 @@
+ROI: dk26 
+Best Model: JSU_M4 
+
+******************************************************************
+Family:  c("JSU", "Johnson SU") 
+
+Call:  gamlss(formula = f_mu, sigma.formula = f_sigma, nu.formula = f_nu,  
+    tau.formula = f_tau, family = function (mu.link = "identity",  
+        sigma.link = "log", nu.link = "identity", tau.link = "log")      { 
+        mstats <- checklink("mu.link", "Johnson SU", substitute(mu.link),  
+            c("inverse", "log", "identity", "own")) 
+        dstats <- checklink("sigma.link", "Johnson SU", substitute(sigma.link),  
+            c("inverse", "log", "identity", "own")) 
+        vstats <- checklink("nu.link", "Johnson SU", substitute(nu.link),  
+            c("inverse", "log", "identity", "own")) 
+        tstats <- checklink("tau.link", "Johnson SU", substitute(tau.link),  
+            c("inverse", "log", "identity", "own")) 
+        structure(list(family = c("JSU", "Johnson SU"), parameters = list(mu = TRUE,  
+            sigma = TRUE, nu = TRUE, tau = TRUE), nopar = 4,  
+            type = "Continuous", mu.link = as.character(substitute(mu.link)),  
+            sigma.link = as.character(substitute(sigma.link)),  
+            nu.link = as.character(substitute(nu.link)), tau.link = as.character(substitute(tau.link)),  
+            mu.linkfun = mstats$linkfun, sigma.linkfun = dstats$linkfun,  
+            nu.linkfun = vstats$linkfun, tau.linkfun = tstats$linkfun,  
+            mu.linkinv = mstats$linkinv, sigma.linkinv = dstats$linkinv,  
+            nu.linkinv = vstats$linkinv, tau.linkinv = tstats$linkinv,  
+            mu.dr = mstats$mu.eta, sigma.dr = dstats$mu.eta,  
+            nu.dr = vstats$mu.eta, tau.dr = tstats$mu.eta, dldm = function(y,  
+                mu, sigma, nu, tau) {                 rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldm <- (z/(z * z + 1) + (r/(rtau * (z * z +  
+                  1)^(0.5))))/(c * sigma)                 dldm 
+            }, d2ldm2 = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldm <- (z/(z * z + 1) + (r/(rtau * (z * z +  
+                  1)^(0.5))))/(c * sigma)                 d2ldm2 <- -dldm * dldm 
+                d2ldm2 <- ifelse(d2ldm2 < -1e-15, d2ldm2, -1e-15) 
+                d2ldm2             }, dldd = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldd <- (z + w^(0.5) * sinh(omega)) * (z/(z *  
+                  z + 1) + (r/(rtau * (z * z + 1)^(0.5)))) 
+                dldd <- (dldd - 1)/sigma                 dldd 
+            }, d2ldd2 = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldd <- (z + w^(0.5) * sinh(omega)) * (z/(z *  
+                  z + 1) + (r/(rtau * (z * z + 1)^(0.5)))) 
+                dldd <- (dldd - 1)/sigma                 d2ldd2 <- -dldd * dldd 
+                d2ldd2 <- ifelse(d2ldd2 < -1e-15, d2ldd2, -1e-15) 
+                d2ldd2             }, dldv = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dlogcdv <- (rtau * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1) 
+                dzdv <- -(z + w^(0.5) * sinh(omega)) * dlogcdv +  
+                  (rtau * w^(0.5) * cosh(omega)) 
+                dldv <- -dlogcdv - (z/(z * z + 1) + (r/(rtau *  
+                  (z * z + 1)^(0.5)))) * dzdv + r                 dldv 
+            }, d2ldv2 = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dlogcdv <- (rtau * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1) 
+                dzdv <- -(z + w^(0.5) * sinh(omega)) * dlogcdv +  
+                  (rtau * w^(0.5) * cosh(omega)) 
+                dldv <- -dlogcdv - (z/(z * z + 1) + (r/(rtau *  
+                  (z * z + 1)^(0.5)))) * dzdv + r 
+                d2ldv2 <- -dldv * dldv 
+                d2ldv2 <- ifelse(d2ldv2 < -1e-04, d2ldv2, -1e-04) 
+                d2ldv2             }, dldt = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dlogcdt <- -rtau * w * ((1/(w - 1)) + ((cosh(2 *  
+                  omega))/(w * cosh(2 * omega) + 1))) 
+                dlogcdt <- dlogcdt + ((nu * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1)) 
+                dzdt <- -(z + w^(0.5) * sinh(omega)) * dlogcdt -  
+                  rtau * w^(0.5) * sinh(omega) + nu * w^(0.5) *  
+                  cosh(omega) 
+                dldt <- -dlogcdt - (1/rtau) - (z/(z * z + 1) +  
+                  (r/(rtau * (z * z + 1)^(0.5)))) * dzdt + (r *  
+                  (r + nu))/rtau                 dldt <- -dldt * rtau * rtau 
+                dldt             }, d2ldt2 = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dlogcdt <- -rtau * w * ((1/(w - 1)) + ((cosh(2 *  
+                  omega))/(w * cosh(2 * omega) + 1))) 
+                dlogcdt <- dlogcdt + ((nu * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1)) 
+                dzdt <- -(z + w^(0.5) * sinh(omega)) * dlogcdt -  
+                  rtau * w^(0.5) * sinh(omega) + nu * w^(0.5) *  
+                  cosh(omega) 
+                dldt <- -dlogcdt - (1/rtau) - (z/(z * z + 1) +  
+                  (r/(rtau * (z * z + 1)^(0.5)))) * dzdt + (r *  
+                  (r + nu))/rtau                 dldt <- -dldt * rtau * rtau 
+                d2ldt2 <- -dldt * dldt 
+                d2ldt2 <- ifelse(d2ldt2 < -1e-04, d2ldt2, -1e-04) 
+                d2ldt2             }, d2ldmdd = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldm <- (z/(z * z + 1) + (r/(rtau * (z * z +  
+                  1)^(0.5))))/(c * sigma) 
+                dldd <- (z + w^(0.5) * sinh(omega)) * (z/(z *  
+                  z + 1) + (r/(rtau * (z * z + 1)^(0.5)))) 
+                dldd <- (dldd - 1)/sigma 
+                d2ldmdd <- -(dldm * dldd)                 d2ldmdd 
+            }, d2ldmdv = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldm <- (z/(z * z + 1) + (r/(rtau * (z * z +  
+                  1)^(0.5))))/(c * sigma) 
+                dlogcdv <- (rtau * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1) 
+                dzdv <- -(z + w^(0.5) * sinh(omega)) * dlogcdv +  
+                  (rtau * w^(0.5) * cosh(omega)) 
+                dldv <- -dlogcdv - (z/(z * z + 1) + (r/(rtau *  
+                  (z * z + 1)^(0.5)))) * dzdv + r 
+                d2ldmdv <- -(dldm * dldv)                 d2ldmdv 
+            }, d2ldmdt = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldm <- (z/(z * z + 1) + (r/(rtau * (z * z +  
+                  1)^(0.5))))/(c * sigma) 
+                dlogcdt <- -rtau * w * ((1/(w - 1)) + ((cosh(2 *  
+                  omega))/(w * cosh(2 * omega) + 1))) 
+                dlogcdt <- dlogcdt + ((nu * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1)) 
+                dzdt <- -(z + w^(0.5) * sinh(omega)) * dlogcdt -  
+                  rtau * w^(0.5) * sinh(omega) + nu * w^(0.5) *  
+                  cosh(omega) 
+                dldt <- -dlogcdt - (1/rtau) - (z/(z * z + 1) +  
+                  (r/(rtau * (z * z + 1)^(0.5)))) * dzdt + (r *  
+                  (r + nu))/rtau                 dldt <- -dldt * rtau * rtau 
+                d2ldmdt <- -(dldm * dldt)                 d2ldmdt 
+            }, d2ldddv = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldd <- (z + w^(0.5) * sinh(omega)) * (z/(z *  
+                  z + 1) + (r/(rtau * (z * z + 1)^(0.5)))) 
+                dldd <- (dldd - 1)/sigma 
+                dlogcdv <- (rtau * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1) 
+                dzdv <- -(z + w^(0.5) * sinh(omega)) * dlogcdv +  
+                  (rtau * w^(0.5) * cosh(omega)) 
+                dldv <- -dlogcdv - (z/(z * z + 1) + (r/(rtau *  
+                  (z * z + 1)^(0.5)))) * dzdv + r 
+                d2ldddv <- -(dldd * dldv)                 d2ldddv 
+            }, d2ldddt = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dldd <- (z + w^(0.5) * sinh(omega)) * (z/(z *  
+                  z + 1) + (r/(rtau * (z * z + 1)^(0.5)))) 
+                dldd <- (dldd - 1)/sigma 
+                dlogcdt <- -rtau * w * ((1/(w - 1)) + ((cosh(2 *  
+                  omega))/(w * cosh(2 * omega) + 1))) 
+                dlogcdt <- dlogcdt + ((nu * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1)) 
+                dzdt <- -(z + w^(0.5) * sinh(omega)) * dlogcdt -  
+                  rtau * w^(0.5) * sinh(omega) + nu * w^(0.5) *  
+                  cosh(omega) 
+                dldt <- -dlogcdt - (1/rtau) - (z/(z * z + 1) +  
+                  (r/(rtau * (z * z + 1)^(0.5)))) * dzdt + (r *  
+                  (r + nu))/rtau                 dldt <- -dldt * rtau * rtau 
+                d2ldddt <- -(dldd * dldt)                 d2ldddt 
+            }, d2ldvdt = function(y, mu, sigma, nu, tau) { 
+                rtau <- 1/tau 
+                w <- ifelse(rtau < 1e-07, 1, exp(rtau^2)) 
+                omega <- -nu * rtau 
+                c <- (0.5 * (w - 1) * (w * cosh(2 * omega) +  
+                  1))^(-0.5) 
+                z <- (y - (mu + c * sigma * w^(0.5) * sinh(omega)))/(c *  
+                  sigma)                 r <- -nu + asinh(z)/rtau 
+                dlogcdv <- (rtau * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1) 
+                dzdv <- -(z + w^(0.5) * sinh(omega)) * dlogcdv +  
+                  (rtau * w^(0.5) * cosh(omega)) 
+                dldv <- -dlogcdv - (z/(z * z + 1) + (r/(rtau *  
+                  (z * z + 1)^(0.5)))) * dzdv + r 
+                dlogcdt <- -rtau * w * ((1/(w - 1)) + ((cosh(2 *  
+                  omega))/(w * cosh(2 * omega) + 1))) 
+                dlogcdt <- dlogcdt + ((nu * w * sinh(2 * omega))/(w *  
+                  cosh(2 * omega) + 1)) 
+                dzdt <- -(z + w^(0.5) * sinh(omega)) * dlogcdt -  
+                  rtau * w^(0.5) * sinh(omega) + nu * w^(0.5) *  
+                  cosh(omega) 
+                dldt <- -dlogcdt - (1/rtau) - (z/(z * z + 1) +  
+                  (r/(rtau * (z * z + 1)^(0.5)))) * dzdt + (r *  
+                  (r + nu))/rtau                 dldt <- -dldt * rtau * rtau 
+                d2ldvdt <- -(dldv * dldt)                 d2ldvdt 
+            }, G.dev.incr = function(y, mu, sigma, nu, tau, ...) { 
+                -2 * dJSU(y, mu, sigma, nu, tau, log = TRUE) 
+            }, rqres = expression(rqres(pfun = "pJSU", type = "Continuous",  
+                y = y, mu = mu, sigma = sigma, nu = nu, tau = tau)),  
+            mu.initial = expression(mu <- (y + mean(y))/2), sigma.initial = expression(sigma <- rep(sd(y)/4,  
+                length(y))), nu.initial = expression(nu <- rep(0,  
+                length(y))), tau.initial = expression(tau <- rep(1,  
+                length(y))), mu.valid = function(mu) TRUE, sigma.valid = function(sigma) all(sigma >  
+                0), nu.valid = function(nu) TRUE, tau.valid = function(tau) all(tau >  
+                0), y.valid = function(y) TRUE, mean = function(mu,  
+                sigma, nu, tau) mu, variance = function(mu, sigma,  
+                nu, tau) sigma^2), class = c("gamlss.family",  
+            "family"))     }, data = data, trace = FALSE) 
+
+Fitting method: RS() 
+
+------------------------------------------------------------------
+Mu link function:  identity
+Mu Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.563e-01  1.076e-02   14.52  < 2e-16 ***
+pb(age)     -1.486e-03  4.903e-05  -30.30  < 2e-16 ***
+sex2        -6.202e-03  2.020e-03   -3.07  0.00216 ** 
+TIV          3.091e-01  6.998e-03   44.17  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Sigma link function:  log
+Sigma Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -2.758270   0.028834  -95.66  < 2e-16 ***
+pb(age)     -0.001959   0.000628   -3.12  0.00182 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Nu link function:  identity 
+Nu Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept) -0.333631   0.343062  -0.973    0.331
+pb(age)      0.003173   0.008379   0.379    0.705
+
+------------------------------------------------------------------
+Tau link function:  log 
+Tau Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 0.914190   0.242857   3.764  0.00017 ***
+pb(age)     0.002278   0.005831   0.391  0.69607    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+NOTE: Additive smoothing terms exist in the formulas: 
+ i) Std. Error for smoothers are for the linear effect only. 
+ii) Std. Error for the linear terms may not be reliable. 
+------------------------------------------------------------------
+No. of observations in the fit:  3536 
+Degrees of Freedom for the fit:  14.88146
+      Residual Deg. of Freedom:  3521.119 
+                      at cycle:  18 
+ 
+Global Deviance:     -10096.88 
+            AIC:     -10067.12 
+            SBC:     -9975.29 
+******************************************************************
+                Estimate   Std. Error     t value      Pr(>|t|)
+(Intercept)  0.156291610 1.076437e-02  14.5193423  1.939807e-46
+pb(age)     -0.001485586 4.902984e-05 -30.2996227 1.832312e-179
+sex2        -0.006201895 2.020150e-03  -3.0700177  2.156733e-03
+TIV          0.309121719 6.998483e-03  44.1698201  0.000000e+00
+(Intercept) -2.758270078 2.883452e-02 -95.6586168  0.000000e+00
+pb(age)     -0.001959235 6.279579e-04  -3.1200095  1.823034e-03
+(Intercept) -0.333631261 3.430619e-01  -0.9725105  3.308632e-01
+pb(age)      0.003173218 8.379298e-03   0.3786974  7.049354e-01
+(Intercept)  0.914189504 2.428570e-01   3.7643117  1.697247e-04
+pb(age)      0.002277981 5.830997e-03   0.3906674  6.960666e-01
