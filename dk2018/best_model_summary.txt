@@ -1,0 +1,116 @@
+ROI: dk2018 
+Best Model: BCCG_M3 
+
+******************************************************************
+Family:  c("BCCG", "Box-Cox-Cole-Green") 
+
+Call:  gamlss(formula = f_mu, sigma.formula = f_sigma, nu.formula = f_nu,  
+    tau.formula = f_tau, family = function (mu.link = "identity",  
+        sigma.link = "log", nu.link = "identity")      { 
+        mstats <- checklink("mu.link", "BC Cole Green", substitute(mu.link),  
+            c("inverse", "log", "identity", "own")) 
+        dstats <- checklink("sigma.link", "BC Cole Green", substitute(sigma.link),  
+            c("inverse", "log", "identity", "own")) 
+        vstats <- checklink("nu.link", "BC Cole Green", substitute(nu.link),  
+            c("inverse", "log", "identity", "own")) 
+        structure(list(family = c("BCCG", "Box-Cox-Cole-Green"),  
+            parameters = list(mu = TRUE, sigma = TRUE, nu = TRUE),  
+            nopar = 3, type = "Continuous", mu.link = as.character(substitute(mu.link)),  
+            sigma.link = as.character(substitute(sigma.link)),  
+            nu.link = as.character(substitute(nu.link)), mu.linkfun = mstats$linkfun,  
+            sigma.linkfun = dstats$linkfun, nu.linkfun = vstats$linkfun,  
+            mu.linkinv = mstats$linkinv, sigma.linkinv = dstats$linkinv,  
+            nu.linkinv = vstats$linkinv, mu.dr = mstats$mu.eta,  
+            sigma.dr = dstats$mu.eta, nu.dr = vstats$mu.eta,  
+            dldm = function(y, mu, sigma, nu) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma) 
+                dldm <- ((z/sigma) + nu * (z * z - 1))/mu                 dldm 
+            }, d2ldm2 = function(y, mu, sigma, nu) { 
+                d2ldm2 <- -(1 + 2 * nu * nu * sigma * sigma) 
+                d2ldm2 <- d2ldm2/(mu * mu * sigma * sigma)                 d2ldm2 
+            }, dldd = function(y, mu, sigma, nu) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma) 
+                h <- dnorm(1/(sigma * abs(nu)))/pnorm(1/(sigma *  
+                  abs(nu))) 
+                dldd <- (z^2 - 1)/sigma + h/(sigma^2 * abs(nu)) 
+                dldd             }, d2ldd2 = function(sigma) { 
+                d2ldd2 <- -2/(sigma^2)                 d2ldd2 
+            }, dldv = function(y, mu, sigma, nu) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma) 
+                h <- dnorm(1/(sigma * abs(nu)))/pnorm(1/(sigma *  
+                  abs(nu)))                 l <- log(y/mu) 
+                dldv <- (z - (l/sigma)) * (z/nu) - l * (z * z -  
+                  1)                 dldv <- dldv + sign(nu) * h/(sigma * nu^2) 
+                dldv             }, d2ldv2 = function(sigma) { 
+                d2ldv2 <- -7 * sigma * sigma/4                 d2ldv2 
+            }, d2ldmdd = function(mu, sigma, nu) -2 * nu/(mu *  
+                sigma), d2ldmdv = function(mu) 1/(2 * mu), d2ldddv = function(sigma,  
+                nu) -sigma * nu, G.dev.incr = function(y, mu,  
+                sigma, nu, ...) -2 * dBCCG(y, mu = mu, sigma = sigma,  
+                nu = nu, log = TRUE), rqres = expression(rqres(pfun = "pBCCG",  
+                type = "Continuous", y = y, mu = mu, sigma = sigma,  
+                nu = nu)), mu.initial = expression(mu <- (y +  
+                mean(y))/2), sigma.initial = expression(sigma <- rep(0.1,  
+                length(y))), nu.initial = expression(nu <- rep(0.5,  
+                length(y))), mu.valid = function(mu) TRUE, sigma.valid = function(sigma) all(sigma >  
+                0), nu.valid = function(nu) TRUE, y.valid = function(y) all(y >  
+                0)), class = c("gamlss.family", "family")) 
+    }, data = data, trace = FALSE) 
+
+Fitting method: RS() 
+
+------------------------------------------------------------------
+Mu link function:  identity
+Mu Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  0.1854474  0.0091400  20.290   <2e-16 ***
+pb(age)     -0.0018684  0.0000405 -46.136   <2e-16 ***
+sex2        -0.0002564  0.0016388  -0.156    0.876    
+TIV          0.2142808  0.0060778  35.256   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Sigma link function:  log
+Sigma Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -2.3916920  0.0268002  -89.24   <2e-16 ***
+pb(age)      0.0060150  0.0005977   10.06   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Nu link function:  identity 
+Nu Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept) 0.488051   0.250806   1.946  0.05174 . 
+pb(age)     0.013851   0.004983   2.779  0.00547 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+NOTE: Additive smoothing terms exist in the formulas: 
+ i) Std. Error for smoothers are for the linear effect only. 
+ii) Std. Error for the linear terms may not be reliable. 
+------------------------------------------------------------------
+No. of observations in the fit:  3536 
+Degrees of Freedom for the fit:  10.44557
+      Residual Deg. of Freedom:  3525.554 
+                      at cycle:  11 
+ 
+Global Deviance:     -11544.61 
+            AIC:     -11523.72 
+            SBC:     -11459.26 
+******************************************************************
+                 Estimate   Std. Error     t value      Pr(>|t|)
+(Intercept)  0.1854474416 9.139986e-03  20.2896851  1.156459e-86
+pb(age)     -0.0018684215 4.049798e-05 -46.1361713  0.000000e+00
+sex2        -0.0002563902 1.638813e-03  -0.1564487  8.756883e-01
+TIV          0.2142808304 6.077815e-03  35.2562280 1.476146e-233
+(Intercept) -2.3916919933 2.680018e-02 -89.2416539  0.000000e+00
+pb(age)      0.0060150116 5.976690e-04  10.0641191  1.645832e-23
+(Intercept)  0.4880505117 2.508059e-01   1.9459290  5.174244e-02
+pb(age)      0.0138511569 4.983399e-03   2.7794596  5.473740e-03
