@@ -1,0 +1,156 @@
+ROI: dk2030 
+Best Model: BCT_M4 
+
+******************************************************************
+Family:  c("BCT", "Box-Cox t") 
+
+Call:  gamlss(formula = f_mu, sigma.formula = f_sigma, nu.formula = f_nu,  
+    tau.formula = f_tau, family = function (mu.link = "identity",  
+        sigma.link = "log", nu.link = "identity", tau.link = "log")      { 
+        mstats <- checklink("mu.link", "Box Cox t ", substitute(mu.link),  
+            c("inverse", "log", "identity", "own")) 
+        dstats <- checklink("sigma.link", "Box Cox t ", substitute(sigma.link),  
+            c("inverse", "log", "identity", "own")) 
+        vstats <- checklink("nu.link", "Box Cox t ", substitute(nu.link),  
+            c("inverse", "log", "identity", "own")) 
+        tstats <- checklink("tau.link", "Box Cox t ", substitute(tau.link),  
+            c("inverse", "log", "identity", "own")) 
+        structure(list(family = c("BCT", "Box-Cox t"), parameters = list(mu = TRUE,  
+            sigma = TRUE, nu = TRUE, tau = TRUE), nopar = 4,  
+            type = "Continuous", mu.link = as.character(substitute(mu.link)),  
+            sigma.link = as.character(substitute(sigma.link)),  
+            nu.link = as.character(substitute(nu.link)), tau.link = as.character(substitute(tau.link)),  
+            mu.linkfun = mstats$linkfun, sigma.linkfun = dstats$linkfun,  
+            nu.linkfun = vstats$linkfun, tau.linkfun = tstats$linkfun,  
+            mu.linkinv = mstats$linkinv, sigma.linkinv = dstats$linkinv,  
+            nu.linkinv = vstats$linkinv, tau.linkinv = tstats$linkinv,  
+            mu.dr = mstats$mu.eta, sigma.dr = dstats$mu.eta,  
+            nu.dr = vstats$mu.eta, tau.dr = tstats$mu.eta, dldm = function(y,  
+                mu, sigma, nu, tau) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma)                 w <- (tau + 1)/(tau + z^2) 
+                dldm <- (w * z)/(mu * sigma) + (nu/mu) * (w *  
+                  (z^2) - 1)                 dldm 
+            }, d2ldm2 = function(mu, sigma, nu, tau) { 
+                d2ldm2 <- -(tau + 2 * nu * nu * sigma * sigma *  
+                  tau + 1)/(tau + 3) 
+                d2ldm2 <- d2ldm2/(mu * mu * sigma * sigma) 
+            }, dldd = function(y, mu, sigma, nu, tau) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma)                 w <- (tau + 1)/(tau + z^2) 
+                h <- dt(1/(sigma * abs(nu)), df = tau)/pt(1/(sigma *  
+                  abs(nu)), df = tau) 
+                dldd <- (w * (z^2) - 1)/sigma + h/(sigma^2 *  
+                  abs(nu))                 dldd 
+            }, d2ldd2 = function(sigma, tau) -2 * tau/(sigma^2 *  
+                (tau + 3)), dldv = function(y, mu, sigma, nu,  
+                tau) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma)                 w <- (tau + 1)/(tau + z^2) 
+                h <- dt(1/(sigma * abs(nu)), df = tau)/pt(1/(sigma *  
+                  abs(nu)), df = tau) 
+                dldv <- ((w * z^2)/nu) - log(y/mu) * (w * z^2 +  
+                  ((w * z)/(sigma * nu)) - 1) 
+                dldv <- dldv + sign(nu) * h/(sigma * nu^2) 
+            }, d2ldv2 = function(sigma) {                 -7 * (sigma^2)/4 
+            }, dldt = function(y, mu, sigma, nu, tau) { 
+                z <- ifelse(nu != 0, (((y/mu)^nu - 1)/(nu * sigma)),  
+                  log(y/mu)/sigma)                 w <- (tau + 1)/(tau + z^2) 
+                j <- (log(pt(1/(sigma * abs(nu)), df = tau +  
+                  0.01)) - log(pt(1/(sigma * abs(nu)), df = tau)))/0.01 
+                dldt <- -0.5 * log(1 + (z^2)/tau) + (w * (z^2))/(2 *  
+                  tau) 
+                dldt <- dldt + 0.5 * digamma((tau + 1)/2) - 0.5 *  
+                  digamma(tau/2) - 1/(2 * tau) - j 
+            }, d2ldt2 = function(tau) { 
+                d2ldt2 <- trigamma((tau + 1)/2) - trigamma(tau/2) +  
+                  2 * (tau + 5)/(tau * (tau + 1) * (tau + 3)) 
+                d2ldt2 <- d2ldt2/4 
+                d2ldt2 <- ifelse(d2ldt2 < -1e-15, d2ldt2, -1e-15) 
+                d2ldt2 
+            }, d2ldmdd = function(mu, sigma, nu, tau) -(2 * nu *  
+                tau)/(mu * sigma * (tau + 3)), d2ldmdv = function(mu,  
+                tau) (tau - 3)/(2 * mu * (tau + 3)), d2ldmdt = function(mu,  
+                nu, tau) (2 * nu)/(mu * (tau + 1) * (tau + 3)),  
+            d2ldddv = function(sigma, nu, tau) -(sigma * nu *  
+                tau)/(tau + 3), d2ldddt = function(sigma, tau) 2/(sigma *  
+                (tau + 1) * (tau + 3)), d2ldvdt = function(sigma,  
+                nu, tau) (2 * sigma^2 * nu)/(tau^2), G.dev.incr = function(y,  
+                mu, sigma, nu, tau, ...) -2 * dBCT(y, mu, sigma,  
+                nu, tau, log = TRUE), rqres = expression(rqres(pfun = "pBCT",  
+                type = "Continuous", y = y, mu = mu, sigma = sigma,  
+                nu = nu, tau = tau)), mu.initial = expression(mu <- (y +  
+                mean(y))/2), sigma.initial = expression(sigma <- rep(0.1,  
+                length(y))), nu.initial = expression(nu <- rep(0.5,  
+                length(y))), tau.initial = expression(tau <- rep(10,  
+                length(y))), mu.valid = function(mu) all(mu >  
+                0), sigma.valid = function(sigma) all(sigma >  
+                0), nu.valid = function(nu) TRUE, tau.valid = function(tau) all(tau >  
+                0), y.valid = function(y) all(y > 0)), class = c("gamlss.family",  
+            "family"))     }, data = data, trace = FALSE) 
+
+Fitting method: RS() 
+
+------------------------------------------------------------------
+Mu link function:  identity
+Mu Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.091e-01  8.180e-03  13.335  < 2e-16 ***
+pb(age)     -1.468e-03  3.561e-05 -41.237  < 2e-16 ***
+sex2        -5.054e-03  1.476e-03  -3.424 0.000624 ***
+TIV          2.588e-01  5.459e-03  47.399  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Sigma link function:  log
+Sigma Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -2.5018515  0.0291051 -85.959  < 2e-16 ***
+pb(age)      0.0047979  0.0006485   7.399 1.71e-13 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Nu link function:  identity 
+Nu Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.310688   0.295681  -1.051    0.293    
+pb(age)      0.030499   0.006042   5.048  4.7e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+Tau link function:  log 
+Tau Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 2.800320   0.375567   7.456 1.11e-13 ***
+pb(age)     0.001558   0.008468   0.184    0.854    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+------------------------------------------------------------------
+NOTE: Additive smoothing terms exist in the formulas: 
+ i) Std. Error for smoothers are for the linear effect only. 
+ii) Std. Error for the linear terms may not be reliable. 
+------------------------------------------------------------------
+No. of observations in the fit:  3536 
+Degrees of Freedom for the fit:  12.58255
+      Residual Deg. of Freedom:  3523.417 
+                      at cycle:  16 
+ 
+Global Deviance:     -12270.78 
+            AIC:     -12245.61 
+            SBC:     -12167.97 
+******************************************************************
+                Estimate   Std. Error     t value      Pr(>|t|)
+(Intercept)  0.109074709 8.179623e-03  13.3349309  1.297537e-39
+pb(age)     -0.001468342 3.560772e-05 -41.2366049 9.446313e-304
+sex2        -0.005053532 1.475961e-03  -3.4238920  6.243447e-04
+TIV          0.258761479 5.459253e-03  47.3986984  0.000000e+00
+(Intercept) -2.501851513 2.910512e-02 -85.9591410  0.000000e+00
+pb(age)      0.004797945 6.484743e-04   7.3988207  1.707747e-13
+(Intercept) -0.310687797 2.956806e-01  -1.0507548  2.934431e-01
+pb(age)      0.030498507 6.042063e-03   5.0476979  4.697367e-07
+(Intercept)  2.800319930 3.755675e-01   7.4562361  1.113983e-13
+pb(age)      0.001558115 8.467790e-03   0.1840049  8.540202e-01
